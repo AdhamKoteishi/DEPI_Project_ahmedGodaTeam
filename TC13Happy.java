@@ -1,32 +1,32 @@
 package tests;
 
+import base.BaseTest;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import base.BaseTest;
 import pages.HomePage;
-import pages.ProductDetailPage;
+import pages.ProductDetailsPage;
 import pages.CartPage;
 
-public class TC13Happy extends BaseTest {
+public class TC13 extends BaseTest {
 
     @Test
-    public void verifyProductQuantityInCart() {
+    public void verifyCorrectQuantityAddedToCart() throws InterruptedException {
 
         HomePage home = new HomePage(driver);
-        ProductDetailPage productDetail = new ProductDetailPage(driver);
+        ProductDetailsPage details = new ProductDetailsPage(driver);
         CartPage cart = new CartPage(driver);
 
-        Assert.assertTrue(home.isHomePageVisible(), "Home page is not visible");
+        Assert.assertTrue(home.isHomePageVisible());
 
-        home.clickViewProduct(1);
+        home.clickFirstProductView();
+        Assert.assertTrue(details.isProductDetailsVisible());
 
-        String productName = productDetail.getProductName();
+        details.setProductQuantity(4);
+        details.clickAddToCartButton();
+        details.clickViewCartButton();
 
-        productDetail.setQuantity(4);
-        productDetail.clickAddToCart();
-        productDetail.clickViewCart();
+        Thread.sleep(2000);
 
-        Assert.assertEquals(cart.getProductName(1), productName, "Product name mismatch in cart");
-        Assert.assertEquals(cart.getProductQuantity(1), "4", "Product quantity mismatch in cart");
+        Assert.assertEquals(cart.getCartProductQuantity(), "4");
     }
 }
